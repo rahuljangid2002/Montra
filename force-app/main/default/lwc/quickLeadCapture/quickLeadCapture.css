@@ -1,0 +1,38 @@
+.custom-container{
+	color : black;
+}
+
+.custom-button {
+    padding: 4px 13px;
+    font-size: 14px;
+    border-radius: 14px;
+    border: none;
+    cursor: pointer;
+    outline: none;
+}
+
+.cancel-btn {
+    background-color: #fff;  
+    color: #16325c;
+    border: 1px solid rgb(71, 61, 61);
+}
+
+.cancel-btn:hover {
+	background-color: #f5f0f0;
+	color: rgb(71, 61, 61);
+}
+
+.submit-btn {
+    background-color: #0070d2; 
+	color: #fff; 
+    border: 1px solid #0070d2;
+}
+
+.submit-btn:hover {
+    background-color: #005bb5;
+	color: #fff;
+}
+
+.custom-button:focus {
+    box-shadow: 0 0 0 2px rgba(0, 113, 211, 0.3);
+}

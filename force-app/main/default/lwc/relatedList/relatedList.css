@@ -1,0 +1,22 @@
+.MainDiv {
+	position:relative;
+}
+.Spinner{
+	position:absolute;
+}
+.SpinnerDiv{
+	height: 150px;
+}
+.slds-box{
+	padding: 0px;
+}
+
+.slds-align_absolute-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.slds-m-top_medium {
+    margin-top: 1rem; /* Adjust as needed */
+}

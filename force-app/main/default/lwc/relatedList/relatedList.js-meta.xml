@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+	<apiVersion>62.0</apiVersion>
+	<isExposed>true</isExposed>
+	<targets>
+		<target>lightning__RecordPage</target>
+		</targets>	
+		<targetConfigs>
+        <targetConfig targets="lightning__RecordPage">
+			<property name="Title"  label="Title" type="String"/>
+			<property name="StandardIconName" label="Icon Name" type="String"/>
+            <property name="ChildObjectName" label="Child Object Name" type="String" required="true"/>
+			<property name="FieldSetName" label="Field Set Name" type="String" required="true"/>
+			<property name="emptyListMessage" label="Enter Message for Empty List" type="String"/>
+			<property name="numberOfElements" label="Number of Records to Display" type="Integer" required="true"/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

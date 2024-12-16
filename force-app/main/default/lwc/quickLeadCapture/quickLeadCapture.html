@@ -1,0 +1,194 @@
+<template>
+
+    <!-- Prompt box  -->
+    <template if:true={showModal}>
+        <div style="width:95%; z-index:10; position:fixed; text-align:center;">
+            <div class="slds-notify slds-notify_toast slds-theme_warning" style="justify-content: center;">
+                <div class="slds-notify__content">
+                    <div style="display:flex; align-items:center;">
+                        <lightning-icon icon-name='utility:warning' alternative-text='warning' size='medium' title='warning'></lightning-icon>
+                        <div class="slds-m-left_small" style="display:flex; flex-direction:column; align-items:center;">
+                            <h2 class="slds-text-heading_small slds-text-align_center">Similar type of Lead exist in the system</br>Do you want to notify him ?</h2>
+                            <div class="slds-m-top_medium slds-text-align_right">
+                                <button class="custom-button submit-btn" type="submit" onclick={handlePromptSubmit} style="text-decoration:none;">Yes</button>
+                                <button class="custom-button cancel-btn slds-m-left_small" onclick={closeQuickAction} style="text-decoration: none;">No</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+
+
+    <lightning-card title="Quick Lead" variant="Narrow" icon-name="standard:lead">
+        <div class="slds-var-p-around_medium slds-border_top" style="position:relative;height:inherit;">
+            <lightning-record-edit-form object-api-name="Lead" density="comfy" onsuccess={handleSuccess}  onsubmit={handleSubmit}
+                onerror={handleError} >
+
+                <template if:true={isLoading}>
+                    <lightning-spinner alternative-text="Loading"></lightning-spinner>
+                </template>
+
+
+                <lightning-input-field class="slds-hide" field-name="Status" value="New"></lightning-input-field>
+                <!-- <lightning-input-field class="slds-hide" field-name="LeadSource" value="Showroom Walkin"> -->
+                <!-- </lightning-input-field> -->
+                <lightning-input-field class="slds-hide" field-name="Country" value="India"></lightning-input-field>
+                <lightning-accordion class="example-accordion" active-section-name="A">
+                    <lightning-accordion-section name="A" label="Personal Information">
+                        <div class="slds-grid slds-wrap">
+                            <template if:true={isNameShow}>
+                                <div
+                                    class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_12-of-12 slds-p-right_medium slds-p-left_medium">
+                                    <lightning-input-field field-name="FirstName" required data-id="FirstName">
+                                    </lightning-input-field>
+                                </div>
+                                <div
+                                    class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_12-of-12 slds-p-right_medium slds-p-left_medium">
+                                    <lightning-input-field field-name="LastName" required data-id="LastName">
+                                    </lightning-input-field>
+                                </div>
+                            </template>
+                            <template if:false={isNameShow}>
+                                <div
+                                    class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_12-of-12 slds-p-right_medium slds-p-left_medium">
+                                    <lightning-input-field field-name="Company_Name__c" required
+                                        data-id="Company_Name__c">
+                                    </lightning-input-field>
+                                </div>
+                                <lightning-layout-item
+                                    class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_12-of-12 slds-p-right_medium slds-p-left_medium">
+                                    <lightning-input class="slds-p-horizontal_xx-small" label="Key Person Name"
+                                        data-id="key-person" required onchange={handleLastNameIfInstitutional}>
+                                    </lightning-input>
+                                </lightning-layout-item>
+                                <div class="slds-hide">
+                                    <lightning-input-field value={lastNameIfInstitutional} field-name="LastName"
+                                        required data-id="LastName">
+                                    </lightning-input-field>
+                                </div>
+                            </template>
+                            <template if:true={isEmailShow}>
+                                <div
+                                    class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_12-of-12 slds-p-right_medium slds-p-left_medium">
+                                    <lightning-input-field field-name="Email" data-id="Email"></lightning-input-field>
+                                </div>
+                            </template>
+                            <div
+                                class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_12-of-12 slds-p-right_medium slds-p-left_medium">
+                                <lightning-input-field field-name="MobilePhone" required data-id="MobilePhone">
+                                </lightning-input-field>
+                            </div>
+                            <template if:true={isKAM}>
+                                <div
+                                    class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_12-of-12 slds-p-right_medium slds-p-left_medium">
+
+                                    <lightning-input-field field-name="Lead_Type__c" value="Institutional"
+                                        data-id="Lead_Type__c" disabled></lightning-input-field>
+                                </div>
+                            </template>
+                            <template if:false={isKAM}>
+                                <div
+                                    class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_12-of-12 slds-p-right_medium slds-p-left_medium">
+                                    <div class="slds-p-horizontal_xx-small">
+                                    <lightning-combobox name="Lead_Type__c" label="Lead Type" value="Retail"
+                                        class="lightning-combobox" required placeholder="Select Lead Type"
+                                        options={leadTypeOption} onchange={handleLeadTypeChange}></lightning-combobox>
+
+                                    <lightning-input-field field-name="Lead_Type__c" value="Retail"
+                                        data-id="Lead_Type__c" class="slds-hide"></lightning-input-field>
+                                    </div>
+
+                                </div>
+                            </template>
+                            <template if:false={isDse}>
+                                <div class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_12-of-12 slds-p-right_medium slds-p-left_medium">
+                                    <div class="slds-p-horizontal_xx-small">
+                                    <lightning-combobox name="Lead_Source" label="Lead Source" class="lightning-combobox"
+                                        placeholder="Select Lead Source" options={leadSourceOptions} value="" onchange={handleSourceChange}>
+                                    </lightning-combobox>
+                                    </div>
+                            
+                                    <lightning-input-field field-name="LeadSource" value={selectedSourceValue} data-id="LeadSource"
+                                        class="slds-hide"></lightning-input-field>
+                                </div>
+                                <div class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_12-of-12 slds-p-right_medium slds-p-left_medium">
+                                <div class="slds-p-horizontal_xx-small">
+                                <lightning-combobox name="Sub_Source" label="Sub Source" placeholder="Select Sub Source"
+                                    options={leadSubSourceOptions} onchange={handleSubSourceChange}
+                                    disabled={disableSubSource}></lightning-combobox>
+                                </div>
+                                <lightning-input-field field-name="Sub_Source__c" data-id="LeadSubSource" value=""
+                                    class="slds-hide"></lightning-input-field>
+                            </div>
+                            </template>
+                            <template if:true={isDse}>
+                                <lightning-input-field  class="slds-hide" field-name="LeadSource" value="Showroom Walkin" data-id="LeadSource"></lightning-input-field>
+                                <div class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_12-of-12 slds-p-right_medium slds-p-left_medium">
+                                    <lightning-input-field class="slds-p-horizontal_medium" field-name="Sub_Source__c" data-id="LeadSubSource"></lightning-input-field>
+                                </div>
+                            </template>
+                            
+                            <div class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_12-of-12 slds-p-right_medium slds-p-left_medium">
+
+                                <lightning-input-field field-name="Interested_In_Buying__c"
+                                    required data-id="Interested_In_Buying"></lightning-input-field>
+                            </div>
+
+                            <div if:true={isReferralSource}
+                                class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_12-of-12 slds-p-right_medium slds-p-left_medium">
+
+                                <lightning-input-field field-name="Referral_Phone_Number__c"
+                                    data-id="Referral_Phone_Number" required value=""></lightning-input-field>
+                            </div>
+                        </div>
+                    </lightning-accordion-section>
+                </lightning-accordion>
+                <lightning-accordion class="example-accordion" active-section-name="A">
+                    <lightning-accordion-section name="A" label="Address Information">
+                        <div class="slds-grid slds-wrap">
+                            <template if:false={isDse}>
+                                <div class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_12-of-12 slds-p-right_medium slds-p-left_medium">
+                                <!-- <lightning-input-field field-name="Street" data-id="Street"></lightning-input-field> -->
+                                    <lightning-input-field field-name="State2__c" data-id="State2__c"></lightning-input-field>
+                                </div>
+                                <div class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_12-of-12 slds-p-right_medium slds-p-left_medium">
+                                    <lightning-input-field field-name="District2__c" data-id="District2__c"></lightning-input-field>
+                                </div>
+                            </template>
+                            <template if:true={isDse}>
+                                <div class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_12-of-12 slds-p-right_medium slds-p-left_medium">
+                                    <lightning-input-field field-name="State2__c" data-id="State2__c" value={state}></lightning-input-field>
+                                </div>
+                                <div class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_12-of-12 slds-p-right_medium slds-p-left_medium">
+                                    <lightning-input-field field-name="District2__c" data-id="District2__c" value={district}></lightning-input-field>
+                                </div>
+                            </template>
+                            <!-- <div
+                                class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_12-of-12 slds-p-right_medium slds-p-left_medium">
+                                <lightning-input-field field-name="PostalCode" data-id="PostalCode">
+                                </lightning-input-field>
+                            </div>
+                            <div
+                                class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_12-of-12 slds-p-right_medium slds-p-left_medium">
+                                <lightning-input-field field-name="Residence_State__c" required
+                                    data-id="Residence_State__c"></lightning-input-field>
+                            </div> -->
+                       </div>
+                    </lightning-accordion-section>
+                </lightning-accordion>
+                <div class="slds-m-top_medium" style="text-align:center">
+                    <lightning-button class="slds-m-right_small" label="Cancel" variant="neutral" type="cancel"
+                        onclick={closeQuickAction}></lightning-button>
+                    <lightning-button class="slds-m-left_small" label="Submit" variant="brand" type='submit'>
+                    </lightning-button>
+                </div>
+                <br />
+                <br />
+
+            </lightning-record-edit-form>
+        </div>
+    </lightning-card>
+</template>

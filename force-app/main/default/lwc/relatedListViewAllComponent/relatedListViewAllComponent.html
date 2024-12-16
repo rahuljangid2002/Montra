@@ -1,0 +1,20 @@
+<template>
+    <lightning-card title={Title} icon-name={StandardIconName}>
+        <div class="slds-grid slds-wrap slds-p-horizontal_medium slds-p-vertical_small">
+            <div class="slds-col slds-size_12-of-12 slds-p-right_small">
+                <a onclick={handleGoToObject}>{pluralName}</a> &gt; <a onclick={handleGoToRecord}>{Name}</a>
+            </div>
+        </div>
+        <lightning-datatable
+            key-field="id"
+            data={recordData}
+            columns={columns}
+            sorted-by={sortedBy}
+            sorted-direction={sortedDirection}
+            onsort={handleSort}
+            hide-checkbox-column
+            class="full-page-datatable"
+        >
+        </lightning-datatable>
+    </lightning-card>
+</template>
